@@ -1,0 +1,21 @@
+.wrapper {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	border: 1px solid gray;
+	border-radius: 1rem;
+	padding: 1rem;
+	margin-bottom: 1rem;
+}
+.name span {
+	font-weight: bold;
+	width: 40%;
+}
+.status,
+.role,
+active {
+	width: 20%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
