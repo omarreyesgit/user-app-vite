@@ -2,27 +2,25 @@ import style from './UserList.module.css';
 import { useState } from 'react';
 import UserListFilters from './UserListFilters';
 import UsersListRows from './UsersListRows';
-import { UserContext } from '../lib/context/UsersContext';
 
 const UserList = ({ initialUsers }) => {
 	const { search, onlyActive, sortBy, ...setFiltersFunctions } = getState();
-	const { users, toggleUserActive } = useUsers(initialUsers);
+	const { users } = useUsers(initialUsers);
 	let usersFiltered = filterUsersByName(users, search);
 	usersFiltered = filterActiveUser(usersFiltered, onlyActive);
 	usersFiltered = sortUsers(usersFiltered, sortBy);
 
 	return (
 		<div className={style.wrapper}>
-			<h1>Listado de Usuarios</h1>
+			<h1 className={style.title}>Listado de Usuarios</h1>
 			<UserListFilters
 				search={search}
 				onlyActive={onlyActive}
 				sortBy={sortBy}
 				{...setFiltersFunctions}
 			/>
-			<UserContext.Provider value={{ toggleUserActive }}>
-				<UsersListRows users={usersFiltered} />
-			</UserContext.Provider>
+
+			<UsersListRows users={usersFiltered} />
 		</div>
 	);
 };
@@ -34,28 +32,26 @@ const getState = () => {
 		sortBy: 0
 	});
 	const setSearch = search => setFilters({ ...filters, search });
-	const setOnlyActive = onlyActive => setFilters({ ...filters, onlyActive });
+	const setOnlyActive = onlyActive => {
+		if (onlyActive && filters.sortBy === 3) {
+			setFilters({ ...filters, sortBy: 0, onlyActive });
+		} else {
+			setFilters({ ...filters, onlyActive });
+		}
+	};
 	const setSortBy = sortBy => setFilters({ ...filters, sortBy });
 	return { ...filters, setSearch, setOnlyActive, setSortBy };
 };
 const useUsers = initialUsers => {
 	const [users, setUsers] = useState(initialUsers);
-	const toggleUserActive = userId => {
-		const newUsers = [...users];
-		const userIndex = newUsers.findIndex(user => user.id === userId);
-		if (userIndex === -1) return;
-		newUsers[userIndex].active = !newUsers[userIndex].active;
-		setUsers(newUsers);
-	};
-	return { users, toggleUserActive };
+
+	return { users };
 };
 const filterUsersByName = (users, search) => {
 	if (!search) return [...users];
 	const lowerCaseName = search?.toLowerCase();
 
-	return users.filter(user =>
-		user.name.toLowerCase().startsWith(lowerCaseName)
-	);
+	return users.filter(user => user.name.toLowerCase().includes(lowerCaseName));
 };
 const filterActiveUser = (users, active) => {
 	if (!active) return users;
@@ -71,6 +67,19 @@ const sortUsers = (users, sortBy) => {
 				if (a.name > b.name) return 1;
 				if (a.name < b.name) return -1;
 				return 0;
+			});
+		case 2:
+			return sortedUsers.sort((a, b) => {
+				if (a.role === b.role) return 0;
+				if (a.role === 'teacher') return -1;
+				if (a.role === 'student' && b.role === 'other') return -1;
+				return 1;
+			});
+		case 3:
+			return sortedUsers.sort((a, b) => {
+				if (a.active === b.active) return 0;
+				if (a.active && !b.active) return -1;
+				return 1;
 			});
 		default:
 			return sortedUsers;

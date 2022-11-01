@@ -1,12 +1,16 @@
+import { USER_ROLES } from '../constants/userRoles';
 import style from './UserRole.module.css';
-const ROLE_STYLE = {
-	teacher: ['Profesor', style.teacher],
-	student: ['Alumno', style.student],
-	other: ['Otro', style.other]
+
+const ROLE_STYLES = {
+	[USER_ROLES.TEACHER]: ['Profesor', style.teacher],
+	[USER_ROLES.STUDENT]: ['Alumno', style.student],
+	[USER_ROLES.OTHER]: ['Otro', style.other]
 };
+
 const UserRole = ({ role }) => {
-	const [roleName, roleClassName] = ROLE_STYLE[role] || ROLE_STYLE.other;
-	return <span className={`${style.role} ${roleClassName}`}>{roleName}</span>;
+	const [roleName, roleClassname] = ROLE_STYLES[role] || ROLE_STYLES.other;
+
+	return <span className={`${style.role} ${roleClassname}`}>{roleName}</span>;
 };
 
 export default UserRole;

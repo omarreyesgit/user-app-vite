@@ -1,3 +1,6 @@
+import InputCheckBox from './forms/InputCheckBox';
+import InputSearch from './forms/InputSearch';
+import Select from './forms/Select';
 import style from './UserListFilters.module.css';
 const UserListFilters = ({
 	search,
@@ -8,25 +11,34 @@ const UserListFilters = ({
 	setSortBy
 }) => {
 	return (
-		<form className={style.form}>
-			<input
-				type='text'
-				value={search}
-				onChange={e => setSearch(e.target.value)}
-			/>
-			<div className={style.active}>
-				<input
-					type='checkbox'
-					checked={onlyActive}
-					onChange={e => setOnlyActive(e.target.checked)}
+		<div className={style.form}>
+			<div className={style.row}>
+				<InputSearch
+					value={search}
+					onChange={e => setSearch(e.target.value)}
+					placeholder='Buscar...'
 				/>
-				<span>Solo Activos</span>
+				<Select
+					value={sortBy}
+					onChange={e => setSortBy(Number(e.target.value))}
+				>
+					<option value={0}>Por Defecto</option>
+					<option value={1}>Por Nombre</option>
+					<option value={2}>Por Rol</option>
+					{!onlyActive && <option value={3}>Por Activos</option>}
+				</Select>
 			</div>
-			<select value={sortBy} onChange={e => setSortBy(Number(e.target.value))}>
-				<option value={0}>Por Defecto</option>
-				<option value={1}>Por Nombre</option>
-			</select>
-		</form>
+			<div className={style.row}>
+				<div className={style.active}>
+					<InputCheckBox
+						className={style.checkbox}
+						checked={onlyActive}
+						onChange={e => setOnlyActive(e.target.checked)}
+					/>
+					<p>Mostrar solo Activos</p>
+				</div>
+			</div>
+		</div>
 	);
 };
 
