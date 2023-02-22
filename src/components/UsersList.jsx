@@ -1,15 +1,11 @@
-import { useEffect, useState } from 'react';
-import { paginateUsers, useFilters } from '../lib/hooks/useFilters';
+import { useFilters } from '../lib/hooks/useFilters';
 import { useUsers } from '../lib/hooks/useUser';
-import {
-	filterActiveUsers,
-	filterUsersByName,
-	sortUsers
-} from '../lib/users/filterUsers';
+
 import UserListPagination from './UserListPagination';
 import style from './UsersList.module.css';
 import UsersListFilters from './UsersListFilters';
 import UsersListRows from './UsersListRows';
+import InputTextAsync from './forms/InputTextAsync';
 
 const UsersList = () => {
 	const {
@@ -26,6 +22,7 @@ const UsersList = () => {
 	return (
 		<div className={style.wrapper}>
 			<h1 className={style.title}>Listado de usuarios</h1>
+
 			<UsersListFilters
 				search={filters.search}
 				onlyActive={filters.onlyActive}
